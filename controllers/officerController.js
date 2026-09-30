@@ -122,6 +122,7 @@ const getDashboardMetrics = async (req, res, next) => {
           (typeof user.hasPermission === 'function'
             ? user.hasPermission('CREATE_PROJECT')
             : user.permissions?.includes('CREATE_PROJECT')),
+      },
       summary: {
         totalProjects: projects.length,
         totalParcels: parcels.length,

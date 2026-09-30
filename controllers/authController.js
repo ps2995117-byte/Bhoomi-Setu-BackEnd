@@ -17,12 +17,13 @@ const sendTokenResponse = (user, statusCode, res, message) => {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/',
   };
 
   res.status(statusCode).cookie('token', token, cookieOptions).json({
     success: true,
+    token, // Return token so frontend stores in localStorage & uses Bearer Authorization header
     message: message || 'Authentication successful',
     user: {
       id: user._id,
@@ -274,7 +275,7 @@ const logout = async (req, res) => {
     expires: new Date(Date.now() + 1000),
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/',
   });
 

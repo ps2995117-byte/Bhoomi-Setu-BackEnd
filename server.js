@@ -61,18 +61,24 @@ app.use(cookieParser());
 // Static folder for uploaded legal deeds & identity proofs
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// API Routes
-app.use('/api/health', healthRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/parcels', parcelRoutes);
-app.use('/api/issues', issueRoutes);
-app.use('/api/audit-logs', auditRoutes);
-app.use('/api/documents', documentRoutes);
-app.use('/api/landowner', landownerRoutes);
-app.use('/api/officer', officerRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/analytics', analyticsRoutes);
+// API Routes - Mounted on both '/api' and root for full proxy/direct compatibility
+const registerRoutes = (prefix = '') => {
+  app.use(`${prefix}/health`, healthRoutes);
+  app.use(`${prefix}/auth`, authRoutes);
+  app.use(`${prefix}/projects`, projectRoutes);
+  app.use(`${prefix}/parcels`, parcelRoutes);
+  app.use(`${prefix}/issues`, issueRoutes);
+  app.use(`${prefix}/audit-logs`, auditRoutes);
+  app.use(`${prefix}/documents`, documentRoutes);
+  app.use(`${prefix}/landowner`, landownerRoutes);
+  app.use(`${prefix}/officer`, officerRoutes);
+  app.use(`${prefix}/notifications`, notificationRoutes);
+  app.use(`${prefix}/analytics`, analyticsRoutes);
+};
+
+// Register routes under /api and root
+registerRoutes('/api');
+registerRoutes('');
 
 // Fallback 404 handler for undefined endpoints
 app.use(notFound);

@@ -116,9 +116,12 @@ const getDashboardMetrics = async (req, res, next) => {
         department: user.department,
         state: user.state,
         district: user.district,
-        village: user.village,
-        canCreateProject: user.role === 'SUPER_ADMIN' || user.hasPermission('CREATE_PROJECT'),
-      },
+        canCreateProject:
+          user.role === 'SUPER_ADMIN' ||
+          user.role === 'STATE_ADMIN' ||
+          (typeof user.hasPermission === 'function'
+            ? user.hasPermission('CREATE_PROJECT')
+            : user.permissions?.includes('CREATE_PROJECT')),
       summary: {
         totalProjects: projects.length,
         totalParcels: parcels.length,
